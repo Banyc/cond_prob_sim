@@ -9,7 +9,7 @@ pub enum MHEvent {
 
 impl Event for MHEvent {}
 
-#[derive(Debug, Hash)]
+#[derive(Debug)]
 pub enum MHOutcome {
     Win,
     Lose,

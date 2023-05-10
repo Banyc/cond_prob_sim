@@ -1,5 +1,3 @@
-use std::hash::Hash;
-
 use rand::Rng;
 
 pub trait Event: Clone {}
@@ -13,7 +11,7 @@ pub trait Condition {
     fn outcome(&self) -> Option<Self::Outcome>;
 }
 
-pub trait Outcome: Hash {}
+pub trait Outcome {}
 
 pub struct RoundSimulator;
 

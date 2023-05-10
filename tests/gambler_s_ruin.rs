@@ -5,7 +5,7 @@ pub struct GREvent(usize);
 
 impl Event for GREvent {}
 
-#[derive(Debug, Hash)]
+#[derive(Debug)]
 pub enum GROutcome {
     AWin,
     BWin,
