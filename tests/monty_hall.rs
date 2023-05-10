@@ -18,6 +18,10 @@ pub enum MHOutcome {
 impl Outcome for MHOutcome {}
 
 pub struct MHCondition {
+    /// Tuple format:
+    /// > (Your choice, Car's location, Host's choice, Whether you switch)
+    ///
+    /// You always switch in the end.
     events: Vec<MHEvent>,
 }
 

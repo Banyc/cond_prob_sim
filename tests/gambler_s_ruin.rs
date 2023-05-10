@@ -14,8 +14,11 @@ pub enum GROutcome {
 impl Outcome for GROutcome {}
 
 pub struct GRCondition {
+    /// Amount of money A has.
     event: GREvent,
+    /// Criteria for A winning.
     n: usize,
+    /// Probability of A winning.
     p: f64,
 }
 
