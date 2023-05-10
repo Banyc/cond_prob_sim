@@ -1,6 +1,6 @@
 use rand::Rng;
 
-pub trait Event: Clone {}
+pub trait Event {}
 
 pub trait Condition {
     type Event: Event;
