@@ -87,16 +87,16 @@ mod tests {
             .collect::<Vec<_>>();
         println!("PMF: {:?}", prob_mass_func);
         // ref: <https://www.sjsu.edu/people/saul.cohn/courses/stats/s0/BinomialProbabTable.pdf>
-        assert!((prob_mass_func[0] - 0.107) < 0.01);
-        assert!((prob_mass_func[1] - 0.268) < 0.01);
-        assert!((prob_mass_func[2] - 0.302) < 0.01);
-        assert!((prob_mass_func[3] - 0.201) < 0.01);
-        assert!((prob_mass_func[4] - 0.088) < 0.01);
-        assert!((prob_mass_func[5] - 0.026) < 0.01);
-        assert!((prob_mass_func[6] - 0.006) < 0.01);
-        assert!((prob_mass_func[7] - 0.001) < 0.01);
-        assert!((prob_mass_func[8] - 0.000) < 0.01);
-        assert!((prob_mass_func[9] - 0.000) < 0.01);
-        assert!((prob_mass_func[10] - 0.000) < 0.01);
+        assert!((prob_mass_func[0] - 0.107).abs() < 0.01);
+        assert!((prob_mass_func[1] - 0.268).abs() < 0.01);
+        assert!((prob_mass_func[2] - 0.302).abs() < 0.01);
+        assert!((prob_mass_func[3] - 0.201).abs() < 0.01);
+        assert!((prob_mass_func[4] - 0.088).abs() < 0.01);
+        assert!((prob_mass_func[5] - 0.026).abs() < 0.01);
+        assert!((prob_mass_func[6] - 0.006).abs() < 0.01);
+        assert!((prob_mass_func[7] - 0.001).abs() < 0.01);
+        assert!((prob_mass_func[8] - 0.000).abs() < 0.01);
+        assert!((prob_mass_func[9] - 0.000).abs() < 0.01);
+        assert!((prob_mass_func[10] - 0.000).abs() < 0.01);
     }
 }
