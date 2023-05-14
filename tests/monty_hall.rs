@@ -27,7 +27,9 @@ pub struct MHCondition {
 
 impl MHCondition {
     pub fn new() -> Self {
-        Self { events: vec![] }
+        Self {
+            events: Vec::with_capacity(3),
+        }
     }
 }
 
