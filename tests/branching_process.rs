@@ -72,7 +72,7 @@ fn rounds_100() {
     let mut extinct = 0;
     for _ in 0..rounds {
         let start = BPCondition::new();
-        let outcome = sim.run::<BPEvent, BPOutcome, BPCondition>(start);
+        let outcome = sim.run(start);
         match outcome {
             BPOutcome::Extinct => extinct += 1,
         }

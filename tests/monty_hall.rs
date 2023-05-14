@@ -82,7 +82,7 @@ fn rounds_1_000_000() {
     for _ in 0..rounds {
         let mut start = MHCondition::new();
         start.push(MHEvent::Door1);
-        let outcome = sim.run::<MHEvent, MHOutcome, MHCondition>(start);
+        let outcome = sim.run(start);
         match outcome {
             MHOutcome::Win => wins += 1,
             MHOutcome::Lose => losses += 1,

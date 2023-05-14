@@ -75,7 +75,7 @@ fn i_5_n_100_p_0_5() {
     let mut b_wins = 0;
     for _ in 0..rounds {
         let start = GRCondition::new(i, n, p);
-        let outcome = sim.run::<GREvent, GROutcome, GRCondition>(start);
+        let outcome = sim.run(start);
         match outcome {
             GROutcome::AWin => a_wins += 1,
             GROutcome::BWin => b_wins += 1,
