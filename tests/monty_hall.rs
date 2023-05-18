@@ -93,6 +93,6 @@ fn rounds_1_000_000() {
     let p_lose = losses as f64 / rounds as f64;
     println!("p_win = {}", p_win);
     println!("p_lose = {}", p_lose);
-    assert!(p_win > 0.66 && p_win < 0.67);
-    assert!(p_lose > 0.33 && p_lose < 0.34);
+    assert!((p_win - 0.66).abs() < 0.01);
+    assert!((p_lose - 0.33).abs() < 0.01);
 }

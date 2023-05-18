@@ -84,6 +84,6 @@ fn i_5_n_100_p_0_5() {
     let p_b_wins = b_wins as f64 / rounds as f64;
     println!("p(A wins) = {}", p_a_wins);
     println!("p(B wins) = {}", p_b_wins);
-    assert!(p_a_wins > 0.04 && p_a_wins < 0.06);
-    assert!(p_b_wins > 0.94 && p_b_wins < 0.96);
+    assert!((p_a_wins - 0.05).abs() < 0.01);
+    assert!((p_b_wins - 0.95).abs() < 0.01);
 }
