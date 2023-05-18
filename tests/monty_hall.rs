@@ -1,4 +1,4 @@
-use cond_prob_sim::{select, Condition, Event, Outcome};
+use cond_prob_sim::{sample, select, Condition, Event, Outcome};
 
 #[derive(Debug, Clone)]
 pub enum MHEvent {
@@ -78,13 +78,12 @@ impl Condition for MHCondition {
 #[test]
 fn rounds_1_000_000() {
     let rounds = 1_000_000;
-    let sim = cond_prob_sim::RoundSimulator;
     let mut wins = 0;
     let mut losses = 0;
     for _ in 0..rounds {
         let mut start = MHCondition::new();
         start.push(MHEvent::Door1);
-        let outcome = sim.run(start);
+        let outcome = sample(start);
         match outcome {
             MHOutcome::Win => wins += 1,
             MHOutcome::Lose => losses += 1,

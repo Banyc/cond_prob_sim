@@ -17,25 +17,21 @@ pub trait Condition {
 
 pub trait Outcome {}
 
-pub struct RoundSimulator;
-
-impl RoundSimulator {
-    /// Run a simulation until an outcome is reached.
-    pub fn run<E, O, C>(&self, start: C) -> O
-    where
-        E: Event,
-        O: Outcome,
-        C: Condition<Event = E, Outcome = O>,
-    {
-        let mut cond = start;
-        loop {
-            if let Some(outcome) = cond.outcome() {
-                return outcome;
-            }
-
-            let event = cond.select_event();
-            cond.push(event);
+/// Run a simulation until an outcome is reached.
+pub fn sample<E, O, C>(start: C) -> O
+where
+    E: Event,
+    O: Outcome,
+    C: Condition<Event = E, Outcome = O>,
+{
+    let mut cond = start;
+    loop {
+        if let Some(outcome) = cond.outcome() {
+            return outcome;
         }
+
+        let event = cond.select_event();
+        cond.push(event);
     }
 }
 

@@ -1,4 +1,4 @@
-use cond_prob_sim::{select, Condition, Event, Outcome};
+use cond_prob_sim::{sample, select, Condition, Event, Outcome};
 use num_bigint::BigUint;
 
 #[derive(Debug, Clone)]
@@ -68,11 +68,10 @@ impl Condition for BPCondition {
 #[test]
 fn rounds_100() {
     let rounds = 100;
-    let sim = cond_prob_sim::RoundSimulator;
     let mut extinct = 0;
     for _ in 0..rounds {
         let start = BPCondition::new();
-        let outcome = sim.run(start);
+        let outcome = sample(start);
         match outcome {
             BPOutcome::Extinct => extinct += 1,
         }

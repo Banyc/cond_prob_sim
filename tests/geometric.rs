@@ -62,6 +62,8 @@ impl Condition for GeomCondition {
 
 #[cfg(test)]
 mod tests {
+    use cond_prob_sim::sample;
+
     use super::*;
 
     #[test]
@@ -69,11 +71,10 @@ mod tests {
         let rounds = 1_000_000;
         let n = 20;
         let p = 0.5;
-        let sim = cond_prob_sim::RoundSimulator;
         let mut counts = vec![0; n];
         for _ in 0..rounds {
             let start = GeomCondition::new(p);
-            let outcome = sim.run(start);
+            let outcome = sample(start);
             if outcome.successes >= counts.len() {
                 continue;
             }

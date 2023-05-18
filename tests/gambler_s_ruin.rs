@@ -1,4 +1,4 @@
-use cond_prob_sim::{select, Condition, Event, Outcome};
+use cond_prob_sim::{sample, select, Condition, Event, Outcome};
 
 #[derive(Debug, Clone)]
 pub struct GREvent(usize);
@@ -70,12 +70,11 @@ fn i_5_n_100_p_0_5() {
     println!("i = {}", i);
     println!("n = {}", n);
     println!("p = {}", p);
-    let sim = cond_prob_sim::RoundSimulator;
     let mut a_wins = 0;
     let mut b_wins = 0;
     for _ in 0..rounds {
         let start = GRCondition::new(i, n, p);
-        let outcome = sim.run(start);
+        let outcome = sample(start);
         match outcome {
             GROutcome::AWin => a_wins += 1,
             GROutcome::BWin => b_wins += 1,

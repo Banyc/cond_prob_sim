@@ -67,6 +67,8 @@ impl Condition for BinCondition {
 
 #[cfg(test)]
 mod tests {
+    use cond_prob_sim::sample;
+
     use super::*;
 
     #[test]
@@ -74,11 +76,10 @@ mod tests {
         let rounds = 1_000_000;
         let n = 10;
         let p = 0.2;
-        let sim = cond_prob_sim::RoundSimulator;
         let mut counts = vec![0; n + 1];
         for _ in 0..rounds {
             let start = BinCondition::new(n, p);
-            let outcome = sim.run(start);
+            let outcome = sample(start);
             counts[outcome.successes] += 1;
         }
         let prob_mass_func = counts

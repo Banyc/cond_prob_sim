@@ -1,4 +1,4 @@
-use cond_prob_sim::{select, Condition, Event, Outcome};
+use cond_prob_sim::{sample, select, Condition, Event, Outcome};
 
 #[derive(Debug, Clone)]
 pub enum BernEvent {
@@ -46,12 +46,11 @@ impl Condition for BernCondition {
 fn rounds_1_000_000_p_0_2() {
     let rounds = 1_000_000;
     let p = 0.2;
-    let sim = cond_prob_sim::RoundSimulator;
     let mut successes = 0;
     let mut failures = 0;
     for _ in 0..rounds {
         let start = BernCondition::new(p);
-        let outcome = sim.run(start);
+        let outcome = sample(start);
         match outcome {
             BernEvent::Success => successes += 1,
             BernEvent::Failure => failures += 1,

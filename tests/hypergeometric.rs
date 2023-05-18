@@ -76,6 +76,8 @@ impl Condition for HGeomCondition {
 
 #[cfg(test)]
 mod tests {
+    use cond_prob_sim::sample;
+
     use super::*;
 
     #[test]
@@ -84,11 +86,10 @@ mod tests {
         let n = 10;
         let successes_remaining = 5;
         let failures_remaining = 45;
-        let sim = cond_prob_sim::RoundSimulator;
         let mut counts = vec![0; n + 1];
         for _ in 0..rounds {
             let start = HGeomCondition::new(successes_remaining, failures_remaining, n);
-            let outcome = sim.run(start);
+            let outcome = sample(start);
             counts[outcome.successes] += 1;
         }
         let prob_mass_func = counts
