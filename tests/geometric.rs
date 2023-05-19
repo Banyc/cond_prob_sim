@@ -9,14 +9,14 @@ pub enum GeomEvent {
 impl Event for GeomEvent {}
 
 pub struct GeomOutcome {
-    pub successes: usize,
+    pub failures: usize,
 }
 
 impl Outcome for GeomOutcome {}
 
 pub struct GeomCondition {
-    successes: usize,
-    failed: bool,
+    failures: usize,
+    succeeded: bool,
     /// Probability of success.
     p: f64,
 }
@@ -24,8 +24,8 @@ pub struct GeomCondition {
 impl GeomCondition {
     pub fn new(p: f64) -> Self {
         Self {
-            successes: 0,
-            failed: false,
+            failures: 0,
+            succeeded: false,
             p,
         }
     }
@@ -36,10 +36,10 @@ impl Condition for GeomCondition {
     type Outcome = GeomOutcome;
 
     fn push(&mut self, event: Self::Event) {
-        assert!(!self.failed);
+        assert!(!self.succeeded);
         match &event {
-            GeomEvent::Success => self.successes += 1,
-            GeomEvent::Failure => self.failed = true,
+            GeomEvent::Success => self.succeeded = true,
+            GeomEvent::Failure => self.failures += 1,
         }
     }
 
@@ -50,9 +50,9 @@ impl Condition for GeomCondition {
     }
 
     fn outcome(&self) -> Option<Self::Outcome> {
-        if self.failed {
+        if self.succeeded {
             Some(GeomOutcome {
-                successes: self.successes,
+                failures: self.failures,
             })
         } else {
             None
@@ -75,10 +75,10 @@ mod tests {
         for _ in 0..rounds {
             let start = GeomCondition::new(p);
             let outcome = sample(start);
-            if outcome.successes >= counts.len() {
+            if outcome.failures >= counts.len() {
                 continue;
             }
-            counts[outcome.successes] += 1;
+            counts[outcome.failures] += 1;
         }
         let prob_mass_func = counts
             .iter()
