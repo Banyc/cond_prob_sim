@@ -1,4 +1,4 @@
-use cond_prob_sim::{select, Condition, Event, Outcome};
+use cond_prob_sim::{select, Condition, Event, NonnegativeRandomVariable, Outcome, StartCondition};
 
 #[derive(Debug, Clone)]
 pub enum NBinEvent {
@@ -63,9 +63,40 @@ impl Condition for NBinCondition {
     }
 }
 
+pub struct NBinStartCondition {
+    pub r: usize,
+    pub p: f64,
+}
+
+impl StartCondition for NBinStartCondition {
+    type Event = NBinEvent;
+    type Outcome = NBinOutcome;
+    type Condition = NBinCondition;
+
+    fn build(&self) -> Self::Condition {
+        NBinCondition::new(self.r, self.p)
+    }
+}
+
+pub struct NBinRandomVariable {
+    pub n: usize,
+}
+
+impl NonnegativeRandomVariable for NBinRandomVariable {
+    type Outcome = NBinOutcome;
+
+    fn map(&self, outcome: Self::Outcome) -> usize {
+        outcome.failures
+    }
+
+    fn space_len(&self) -> usize {
+        self.n + 1
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use cond_prob_sim::sample;
+    use cond_prob_sim::sample_repeat;
 
     use super::*;
 
@@ -75,16 +106,12 @@ mod tests {
         let n = 100;
         let r = 10;
         let p = 0.2;
-        let mut counts = vec![0; n];
-        for _ in 0..rounds {
-            let start = NBinCondition::new(r, p);
-            let outcome = sample(start);
-            if outcome.failures >= counts.len() {
-                continue;
-            }
-            counts[outcome.failures] += 1;
-        }
-        let prob_mass_func = counts
+        let mass = sample_repeat(
+            NBinStartCondition { r, p },
+            rounds,
+            NBinRandomVariable { n },
+        );
+        let prob_mass_func = mass
             .iter()
             .map(|&x| x as f64 / rounds as f64)
             .collect::<Vec<_>>();

@@ -1,4 +1,4 @@
-use cond_prob_sim::{select, Condition, Event, Outcome};
+use cond_prob_sim::{select, Condition, Event, NonnegativeRandomVariable, Outcome, StartCondition};
 
 #[derive(Debug, Clone)]
 pub enum BinEvent {
@@ -65,9 +65,40 @@ impl Condition for BinCondition {
     }
 }
 
+pub struct BinStartCondition {
+    pub n: usize,
+    pub p: f64,
+}
+
+impl StartCondition for BinStartCondition {
+    type Event = BinEvent;
+    type Outcome = BinOutcome;
+    type Condition = BinCondition;
+
+    fn build(&self) -> Self::Condition {
+        BinCondition::new(self.n, self.p)
+    }
+}
+
+pub struct BinRandomVariable {
+    pub n: usize,
+}
+
+impl NonnegativeRandomVariable for BinRandomVariable {
+    type Outcome = BinOutcome;
+
+    fn map(&self, outcome: Self::Outcome) -> usize {
+        outcome.successes
+    }
+
+    fn space_len(&self) -> usize {
+        self.n + 1
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use cond_prob_sim::sample;
+    use cond_prob_sim::sample_repeat;
 
     use super::*;
 
@@ -76,13 +107,8 @@ mod tests {
         let rounds = 1_000_000;
         let n = 10;
         let p = 0.2;
-        let mut counts = vec![0; n + 1];
-        for _ in 0..rounds {
-            let start = BinCondition::new(n, p);
-            let outcome = sample(start);
-            counts[outcome.successes] += 1;
-        }
-        let prob_mass_func = counts
+        let mass = sample_repeat(BinStartCondition { n, p }, rounds, BinRandomVariable { n });
+        let prob_mass_func = mass
             .iter()
             .map(|&x| x as f64 / rounds as f64)
             .collect::<Vec<_>>();

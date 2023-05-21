@@ -15,6 +15,14 @@ pub trait Condition {
     fn outcome(&self) -> Option<Self::Outcome>;
 }
 
+pub trait StartCondition {
+    type Event: Event;
+    type Outcome: Outcome;
+    type Condition: Condition<Event = Self::Event, Outcome = Self::Outcome>;
+
+    fn build(&self) -> Self::Condition;
+}
+
 pub trait Outcome {}
 
 /// Run a simulation until an outcome is reached.
@@ -49,4 +57,33 @@ pub fn select<E>(space: &[(f64, E)]) -> &E {
         }
     }
     event.unwrap()
+}
+
+pub trait NonnegativeRandomVariable {
+    type Outcome: Outcome;
+
+    fn map(&self, outcome: Self::Outcome) -> usize;
+    /// The number of possible values the random variable can take.
+    ///
+    /// $0, 1, 2, ..., \text{space_len} - 1$
+    fn space_len(&self) -> usize;
+}
+
+/// Sample a random variable a number of times and return the number of times each value was
+pub fn sample_repeat<S, RV, O>(start: S, rounds: usize, rv: RV) -> Vec<usize>
+where
+    O: Outcome,
+    S: StartCondition<Outcome = O>,
+    RV: NonnegativeRandomVariable<Outcome = O>,
+{
+    let mut mass = vec![0; rv.space_len()];
+    for _ in 0..rounds {
+        let outcome = sample(start.build());
+        let v = rv.map(outcome);
+        if v >= mass.len() {
+            continue;
+        }
+        mass[v] += 1;
+    }
+    mass
 }

@@ -1,4 +1,4 @@
-use cond_prob_sim::{select, Condition, Event, Outcome};
+use cond_prob_sim::{select, Condition, Event, NonnegativeRandomVariable, Outcome, StartCondition};
 
 #[derive(Debug, Clone)]
 pub enum GeomEvent {
@@ -60,9 +60,39 @@ impl Condition for GeomCondition {
     }
 }
 
+pub struct GeomStartCondition {
+    pub p: f64,
+}
+
+impl StartCondition for GeomStartCondition {
+    type Event = GeomEvent;
+    type Outcome = GeomOutcome;
+    type Condition = GeomCondition;
+
+    fn build(&self) -> Self::Condition {
+        GeomCondition::new(self.p)
+    }
+}
+
+pub struct GeomRandomVariable {
+    pub n: usize,
+}
+
+impl NonnegativeRandomVariable for GeomRandomVariable {
+    type Outcome = GeomOutcome;
+
+    fn map(&self, outcome: Self::Outcome) -> usize {
+        outcome.failures
+    }
+
+    fn space_len(&self) -> usize {
+        self.n + 1
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use cond_prob_sim::sample;
+    use cond_prob_sim::sample_repeat;
 
     use super::*;
 
@@ -71,16 +101,8 @@ mod tests {
         let rounds = 1_000_000;
         let n = 20;
         let p = 0.5;
-        let mut counts = vec![0; n];
-        for _ in 0..rounds {
-            let start = GeomCondition::new(p);
-            let outcome = sample(start);
-            if outcome.failures >= counts.len() {
-                continue;
-            }
-            counts[outcome.failures] += 1;
-        }
-        let prob_mass_func = counts
+        let mass = sample_repeat(GeomStartCondition { p }, rounds, GeomRandomVariable { n });
+        let prob_mass_func = mass
             .iter()
             .map(|&x| x as f64 / rounds as f64)
             .collect::<Vec<_>>();

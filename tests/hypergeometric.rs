@@ -1,4 +1,4 @@
-use cond_prob_sim::{select, Condition, Event, Outcome};
+use cond_prob_sim::{select, Condition, Event, NonnegativeRandomVariable, Outcome, StartCondition};
 
 #[derive(Debug, Clone)]
 pub enum HGeomEvent {
@@ -74,9 +74,41 @@ impl Condition for HGeomCondition {
     }
 }
 
+pub struct HGeomStartCondition {
+    pub successes_remaining: usize,
+    pub failures_remaining: usize,
+    pub n: usize,
+}
+
+impl StartCondition for HGeomStartCondition {
+    type Event = HGeomEvent;
+    type Outcome = HGeomOutcome;
+    type Condition = HGeomCondition;
+
+    fn build(&self) -> Self::Condition {
+        HGeomCondition::new(self.successes_remaining, self.failures_remaining, self.n)
+    }
+}
+
+pub struct HGeomRandomVariable {
+    pub n: usize,
+}
+
+impl NonnegativeRandomVariable for HGeomRandomVariable {
+    type Outcome = HGeomOutcome;
+
+    fn map(&self, outcome: Self::Outcome) -> usize {
+        outcome.successes
+    }
+
+    fn space_len(&self) -> usize {
+        self.n + 1
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use cond_prob_sim::sample;
+    use cond_prob_sim::sample_repeat;
 
     use super::*;
 
@@ -86,13 +118,16 @@ mod tests {
         let n = 10;
         let successes_remaining = 5;
         let failures_remaining = 45;
-        let mut counts = vec![0; n + 1];
-        for _ in 0..rounds {
-            let start = HGeomCondition::new(successes_remaining, failures_remaining, n);
-            let outcome = sample(start);
-            counts[outcome.successes] += 1;
-        }
-        let prob_mass_func = counts
+        let mass = sample_repeat(
+            HGeomStartCondition {
+                successes_remaining,
+                failures_remaining,
+                n,
+            },
+            rounds,
+            HGeomRandomVariable { n },
+        );
+        let prob_mass_func = mass
             .iter()
             .map(|&x| x as f64 / rounds as f64)
             .collect::<Vec<_>>();
