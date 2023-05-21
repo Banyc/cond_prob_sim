@@ -87,3 +87,7 @@ where
     }
     mass
 }
+
+pub fn prob_mass_func(mass: &[usize], rounds: usize) -> Vec<f64> {
+    mass.iter().map(|&x| x as f64 / rounds as f64).collect()
+}

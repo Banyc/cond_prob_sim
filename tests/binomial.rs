@@ -98,7 +98,7 @@ impl NonnegativeRandomVariable for BinRandomVariable {
 
 #[cfg(test)]
 mod tests {
-    use cond_prob_sim::sample_repeat;
+    use cond_prob_sim::{prob_mass_func, sample_repeat};
 
     use super::*;
 
@@ -108,10 +108,7 @@ mod tests {
         let n = 10;
         let p = 0.2;
         let mass = sample_repeat(BinStartCondition { n, p }, rounds, BinRandomVariable { n });
-        let prob_mass_func = mass
-            .iter()
-            .map(|&x| x as f64 / rounds as f64)
-            .collect::<Vec<_>>();
+        let prob_mass_func = prob_mass_func(&mass, rounds);
         println!("PMF: {:?}", prob_mass_func);
         // ref: <https://www.sjsu.edu/people/saul.cohn/courses/stats/s0/BinomialProbabTable.pdf>
         assert!((prob_mass_func[0] - 0.107).abs() < 0.01);

@@ -96,7 +96,7 @@ impl NonnegativeRandomVariable for NBinRandomVariable {
 
 #[cfg(test)]
 mod tests {
-    use cond_prob_sim::sample_repeat;
+    use cond_prob_sim::{prob_mass_func, sample_repeat};
 
     use super::*;
 
@@ -111,10 +111,7 @@ mod tests {
             rounds,
             NBinRandomVariable { n },
         );
-        let prob_mass_func = mass
-            .iter()
-            .map(|&x| x as f64 / rounds as f64)
-            .collect::<Vec<_>>();
+        let prob_mass_func = prob_mass_func(&mass, rounds);
         println!("PMF: {:?}", prob_mass_func);
     }
 }

@@ -75,7 +75,7 @@ impl NonnegativeRandomVariable for BernRandomVariable {
 
 #[cfg(test)]
 mod tests {
-    use cond_prob_sim::sample_repeat;
+    use cond_prob_sim::{prob_mass_func, sample_repeat};
 
     use super::*;
 
@@ -84,10 +84,9 @@ mod tests {
         let rounds = 1_000_000;
         let p = 0.2;
         let mass = sample_repeat(BernStartCondition { p }, rounds, BernRandomVariable);
-        let p_success = mass[1] as f64 / rounds as f64;
-        let p_failure = mass[0] as f64 / rounds as f64;
-        println!("p_success = {}", p_success);
-        println!("p_failure = {}", p_failure);
-        assert!((p_success - p).abs() < 0.01);
+        let prob_mass_func = prob_mass_func(&mass, rounds);
+        println!("p_success = {}", prob_mass_func[1]);
+        println!("p_failure = {}", prob_mass_func[0]);
+        assert!((prob_mass_func[1] - p).abs() < 0.01);
     }
 }
