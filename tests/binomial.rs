@@ -98,7 +98,7 @@ impl NonnegativeRandomVariable for BinRandomVariable {
 
 #[cfg(test)]
 mod tests {
-    use cond_prob_sim::{prob_mass_func, sample_repeat};
+    use cond_prob_sim::{expectation, prob_mass_func, sample_repeat, variance};
 
     use super::*;
 
@@ -122,5 +122,11 @@ mod tests {
         assert!((prob_mass_func[8] - 0.000).abs() < 0.01);
         assert!((prob_mass_func[9] - 0.000).abs() < 0.01);
         assert!((prob_mass_func[10] - 0.000).abs() < 0.01);
+        let expectation = expectation(&prob_mass_func);
+        println!("Expectation: {}", expectation);
+        assert!((expectation - n as f64 * p).abs() < 0.01);
+        let variance = variance(&prob_mass_func, expectation);
+        println!("Variance: {}", variance);
+        assert!((variance - n as f64 * p * (1. - p)).abs() < 0.01);
     }
 }

@@ -91,3 +91,14 @@ where
 pub fn prob_mass_func(mass: &[usize], rounds: usize) -> Vec<f64> {
     mass.iter().map(|&x| x as f64 / rounds as f64).collect()
 }
+
+pub fn expectation(pmf: &[f64]) -> f64 {
+    pmf.iter().enumerate().map(|(x, &p)| x as f64 * p).sum()
+}
+
+pub fn variance(pmf: &[f64], expectation: f64) -> f64 {
+    pmf.iter()
+        .enumerate()
+        .map(|(x, &p)| (x as f64 - expectation).powi(2) * p)
+        .sum()
+}
